@@ -26,9 +26,9 @@ class User(db.Model):
     facultyID = db.Column(db.Integer, primary_key=True)  
     userEmail = db.Column(db.String(50), unique=True, nullable=False)  
     userPassword = db.Column(db.String(50), nullable=False)
-    facultyRole = db.Column(db.String(50), nullable=True)
-    firstName = db.Column(db.String(50), nullable=True)
-    lastName = db.Column(db.String(50), nullable=True)
+    facultyRole = db.Column(db.String(50), nullable=False)
+    firstName = db.Column(db.String(50), nullable=False)
+    lastName = db.Column(db.String(50), nullable=False)
 
 @app.route('/')
 def home():
@@ -62,6 +62,22 @@ def signUp():
     if request.method == 'POST':  
         userEmail = request.form['userEmail']  
         userPassword = request.form['userPassword']  
+        facultyRole = request.form['facultyRole']  
+        firstName = request.form['firstName']  
+        lastName = request.form['lastName']  
+        print(facultyRole)
+        if request.form['facultyRole'] == 'Admin':
+            facultyRole = request.form['facultyRole']
+        elif request.form['facultyRole'] == 'Teacher':
+            facultyRole = request.form['facultyRole']
+        elif request.form['facultyRole'] == 'Exam Officer':
+            facultyRole = request.form['facultyRole']
+        elif request.form['facultyRole'] == 'Principal':
+            facultyRole = request.form['facultyRole']
+        else:
+            return jsonify({'message': 'Need to select faculty role'})
+    
+            
   
         # Check if the username already exists  
         existing_user = User.query.filter_by(userEmail=userEmail).first()  
@@ -70,9 +86,9 @@ def signUp():
   
         # Create a new user  
         hashed_password = bcrypt.generate_password_hash(userPassword).decode('utf-8')  
-        new_user = User(userEmail=userEmail, userPassword=hashed_password)  
+        new_user = User(userEmail=userEmail, userPassword=hashed_password, facultyRole=facultyRole, firstName=firstName, lastName=lastName)  
         db.session.add(new_user)  
-        # db.session.commit()    *not working rn
+        db.session.commit()   
   
         return jsonify({'message': 'User created successfully'})  
   
