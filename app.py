@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-import pyodbc
+#import pyodbc
 
 """
 conn = pyodbc.connect('Driver={SQL Server};'  
@@ -22,62 +22,67 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app) 
 
 class User(db.Model):  
+    __tablename__ = 'facultyInfo'
     id = db.Column(db.Integer, primary_key=True)  
-    username = db.Column(db.String(50), unique=True, nullable=False)  
-    password = db.Column(db.String(50), nullable=False)
+    userEmail = db.Column(db.String(50), unique=True, nullable=False)  
+    userPassword = db.Column(db.String(50), nullable=False)
+    facultyRole = db.Column(db.String(50), nullable=True)
+    firstName = db.Column(db.String(50), nullable=True)
+    lastName = db.Column(db.String(50), nullable=True)
 
 @app.route('/')
 def home():
-    if 'username' in session:  
-            return render_template('home.html', username=session['username'])  
+    if 'userEmail' in session:  
+            return render_template('home.html', userEmail=session['userEmail'])  
     else:  
         return redirect(url_for('login')) 
 
 @app.route('/login', methods=['GET', 'POST']) 
 def login():  
     if request.method == 'POST':
-        username = request.form['username']  
-        password = request.form['password']  
+        userEmail = request.form['userEmail']  
+        userPassword = request.form['userPassword']  
     
         # Query the database for the user  
-        user = User.query.filter_by(username=username).first()  
+        user = User.query.filter_by(userEmail=userEmail).first()  
   
-        if user and bcrypt.check_password_hash(user.password, password):  
-            session['username'] = username
+        if user and bcrypt.check_password_hash(user.userPassword, userPassword):  
+            session['userEmail'] = userEmail
             # User login successful  
             return jsonify({'message': 'Login successful'})  
         else:  
             # Invalid credentials  
             return jsonify({'message': 'Invalid username or password'})  
-
-    return render_template('home.html')  
+    else:
+        return render_template('home.html')  
     
 # Route for user sign up  
 @app.route('/signup', methods=['GET', 'POST'])  
-def signup():  
+def signUp():  
     if request.method == 'POST':  
-        username = request.form['username']  
-        password = request.form['password']  
+        userEmail = request.form['userEmail']  
+        userPassword = request.form['userPassword']  
   
         # Check if the username already exists  
-        existing_user = User.query.filter_by(username=username).first()  
+        existing_user = User.query.filter_by(userEmail=userEmail).first()  
         if existing_user:  
             return jsonify({'message': 'Username already exists'})  
   
         # Create a new user  
-        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')  
-        new_user = User(username=username, password=hashed_password)  
+        hashed_password = bcrypt.generate_password_hash(userPassword).decode('utf-8')  
+        new_user = User(userEmail=userEmail, password=hashed_password)  
         db.session.add(new_user)  
         db.session.commit()  
   
         return jsonify({'message': 'User created successfully'})  
   
-    return render_template('signUp.html') 
+    else:
+        return render_template('signUp.html') 
     
 # Route for user logout  
 @app.route('/logout')  
 def logout():  
-    session.pop('username', None)  
+    session.pop('userEmail', None)  
     return redirect(url_for('login'))  
   
 if __name__ == '__main__':  

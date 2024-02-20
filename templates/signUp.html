@@ -22,13 +22,13 @@
       <div class="row mb-3">  
         <label for="inputEmail3" class="col-sm-3 col-form-label">Email</label>  
         <div class="col-sm-9">  
-          <input type="email" class="form-control" id="inputEmail" required>  
+          <input type="email" class="form-control" id="userEmail" required>  
         </div>  
       </div>  
       <div class="row mb-3">  
         <label for="inputPassword3" class="col-sm-3 col-form-label">Password</label>  
         <div class="col-sm-9">  
-          <input type="password" class="form-control" id="inputPassword" required>  
+          <input type="password" class="form-control" id="userPassword" required>  
         </div>  
       </div>  
       <fieldset class="row mb-3">  
@@ -70,13 +70,13 @@
           event.preventDefault(); // Prevent form submission  
 
           // Get the form values  
-          var email = document.getElementById("inputEmail").value;  
-          var password = document.getElementById("inputPassword").value;  
+          var userEmail = document.getElementById("userEmail").value;  
+          var userPassword = document.getElementById("userPassword").value;  
 
           // Create a new FormData object  
           var formData = new FormData();  
-          formData.append("email", email);  
-          formData.append("password", password);  
+          formData.append("userEmail", userEmail);  
+          formData.append("userPassword", userPassword);  
 
           // Send a POST request to the signup route  
           fetch("/signup", {  
