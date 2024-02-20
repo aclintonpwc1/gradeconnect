@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-#import pyodbc
+import pyodbc
 
 """
 conn = pyodbc.connect('Driver={SQL Server};'  
@@ -17,13 +17,13 @@ cursor = conn.cursor()
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://PiedPiper:password123!@gradeconnect-server.database.windows.net/Grade Connect?driver=SQL+Server'  
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://PiedPiper:password123!@gradeconnect-server.database.windows.net/GradeConnect?driver=SQL+Server'  
 db = SQLAlchemy(app)  
 bcrypt = Bcrypt(app) 
 
 class User(db.Model):  
     __tablename__ = 'facultyInfo'
-    id = db.Column(db.Integer, primary_key=True)  
+    facultyID = db.Column(db.Integer, primary_key=True)  
     userEmail = db.Column(db.String(50), unique=True, nullable=False)  
     userPassword = db.Column(db.String(50), nullable=False)
     facultyRole = db.Column(db.String(50), nullable=True)
@@ -70,9 +70,9 @@ def signUp():
   
         # Create a new user  
         hashed_password = bcrypt.generate_password_hash(userPassword).decode('utf-8')  
-        new_user = User(userEmail=userEmail, password=hashed_password)  
+        new_user = User(userEmail=userEmail, userPassword=hashed_password)  
         db.session.add(new_user)  
-        db.session.commit()  
+        # db.session.commit()    *not working rn
   
         return jsonify({'message': 'User created successfully'})  
   
