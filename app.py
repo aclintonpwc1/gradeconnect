@@ -30,9 +30,9 @@ def home():
 @app.route('/admin')
 def admin():  
     return render_template('admin.html')
-@app.route('/course')
+@app.route('/course-to-student')
 def course():  
-    return render_template('course.html')
+    return render_template('courseToStudent.html')
 @app.route('/examscore')
 def examscore():  
     return render_template('examscore.html')
@@ -55,7 +55,7 @@ def login():
             if user.facultyRole == 'Admin':  
                 return redirect(url_for('admin'))  
             elif user.facultyRole == 'Teacher':  
-                return redirect(url_for('course'))  
+                return redirect(url_for('course-to-student'))  
             elif user.facultyRole == 'Exam Officer':  
                 return redirect(url_for('examscore'))  
             # elif user.facultyRole == 'Principal':  
