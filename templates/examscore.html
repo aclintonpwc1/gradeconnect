@@ -1,57 +1,92 @@
-<!doctype html>  
-<html lang="en">  
-  <head>  
-    <meta charset="utf-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1">  
-    <link rel="stylesheet" type="text/css" href="./Grade-Connect-amankwah-clinton/CSS/admin.css" />  
-    <title>Exam Officer</title>  
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">  
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>  
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>  
+<!DOCTYPE html>  
+<html>  
+<head>  
+    <title>Course Table</title>  
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">  
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>  
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>  
     <style>  
- 
+        body {  
+            padding-top: 50px;  
+            background-color: #f8f9fa; /* This will change the background color */  
+            /* Or you can use a background image */  
+            /* background-image: url('path-to-your-image.jpg'); */  
+            /* background-size: cover; */  
+        }  
+        .table {  
+            margin-top: 20px;  
+            width: 100%; /* This will make the table take up the full width of its container */  
+        }  
+        th, td {  
+            padding: 15px; /* This will increase the padding inside the table cells */  
+            font-size: 18px; /* This will increase the font size in the table */  
+        }  
+        .container {  
+            max-width: 100%; /* This will make the container take up the full width of the screen */  
+        }  
     </style>  
- </head>  
-  <body>  
-
-    <div class="card mb-3">
-        <img src="..." class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Exam Officer</h5>
-          <div class="container">  
+</head>  
+<body>  
+    <div class="container">  
         <div class="row justify-content-center">  
-          <div class="col-md-6">  
-            <form action="/insert_scores" method="POST">  
-              <div class="mb-3">  
-                <label for="courseName" class="form-label">Course Name</label>  
-                <input type="text" class="form-control" id="courseName" name="courseName" required>  
-              </div>  
-              <div class="mb-3">  
-                <label for="studentName" class="form-label">Student Name</label>  
-                <input type="text" class="form-control" id="studentName" name="studentName" required>  
-              </div>  
-              <div class="mb-3">  
-                <label for="score" class="form-label">Score</label>  
-                <input type="number" class="form-control" id="score" name="score" required>  
-              </div>  
-              <div class="mb-3">  
-                <label for="passingGrade" class="form-label">Passing Grade Threshold</label>  
-                <input type="number" class="form-control" id="passingGrade" name="passingGrade" required>  
-              </div>  
-              <div class="text-center">  
-                <button type="submit" class="btn btn-primary">Submit</button>  
-              </div>  
-            </form>  
-          </div>  
+            <div class="col-md-8">  
+                <form id="courseForm" action="/api/courses" method="post">  
+                    <table class="table table-striped table-hover table-bordered">  
+                        <thead class="thead-dark">  
+                            <tr>  
+                                <th>  
+                                    <select id="courseName" class="form-control" name="courseName">  
+                                        <!-- Options will be populated from the backend -->  
+                                    </select>  
+                                </th>  
+                                <th>Exam 1</th>  
+                                <th>Exam 2</th>  
+                                <th>Exam 3</th>  
+                            </tr>  
+                        </thead>  
+                        <tbody id="studentData">  
+                            <!-- Empty rows for student data -->  
+                            <tr><td></td><td></td><td></td><td></td></tr>  
+                            <tr><td></td><td></td><td></td><td></td></tr>  
+                            <tr><td></td><td></td><td></td><td></td></tr>  
+                            <!-- More rows can be added as needed -->  
+                        </tbody>  
+                    </table>  
+                    <button type="submit" class="btn btn-primary">Submit</button>  
+                </form>  
+            </div>  
         </div>  
-      </div> 
-          <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
-        </div>
-      </div>
-
-
-
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>  
-  </body>  
+    </div>  
+  
+    <script>  
+        $(document).ready(function() {  
+            // Fetch courses from the backend  
+            $.get('/api/courses', function(data) {  
+                data.forEach(function(course) {  
+                    $('#courseName').append('<option value="' + course.id + '">' + course.name + '</option>');  
+                });  
+            });  
+  
+            // Fetch students when a course is selected  
+            $('#courseName').change(function() {  
+                var courseId = $(this).val();  
+                $.get('/api/students?courseId=' + courseId, function(data) {  
+                    $('#studentData').empty();  
+                    data.forEach(function(student) {  
+                        $('#studentData').append('<tr><td>' + student.name + '</td><td>' + student.exam1 + '</td><td>' + student.exam2 + '</td><td>' + student.exam3 + '</td></tr>');  
+                    });  
+                });  
+            });  
+  
+            // Handle form submission  
+            $('#courseForm').submit(function(e) {  
+                e.preventDefault();  
+                var formData = $(this).serialize();  
+                $.post($(this).attr('action'), formData, function(response) {  
+                    // Handle the response from the server  
+                });  
+            });  
+        });  
+    </script>  
+</body>  
 </html>  
