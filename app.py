@@ -30,8 +30,11 @@ def home():
 @app.route('/admin')
 def admin():  
     return render_template('admin.html')
-@app.route('/course-to-student')
+@app.route('/course')
 def course():  
+    return render_template('course.html')
+@app.route('/course-to-student')
+def courseToStudent():  
     return render_template('courseToStudent.html')
 @app.route('/examscore')
 def examscore():  

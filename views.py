@@ -14,7 +14,7 @@ def newCourse():
         facultyID = request.form.get('facultyID')
         conn = pyodbc.connect('Driver={SQL Server};'  
                           'Server=gradeconnect-server.database.windows.net;'  
-                          'Database=Grade Connect;'  
+                          'Database=GradeConnect;'  
                           'UID=PiedPiper;'  
                           'PWD=password123!;')  
         cursor = conn.cursor()
@@ -47,7 +47,7 @@ def newCourse():
         return "Form submitted successfully"
     return render_template('home.html')
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
 # Retrieve coursename from frontend as courseName (and subject as subject?)
 courseName = '???'
 subject = '???'
