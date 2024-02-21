@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for, s
 from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
+import random  
 import pyodbc
 
 """
@@ -22,10 +23,10 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app) 
 
 class User(db.Model):  
-    __tablename__ = 'facultyInfo'
-    facultyID = db.Column(db.Integer, primary_key=True)  
+    __tablename__ = 'facultyInfo1'
+    facultyID = db.Column(db.Integer, primary_key=True, autoincrement=False)  
     userEmail = db.Column(db.String(50), unique=True, nullable=False)  
-    userPassword = db.Column(db.String(50), nullable=False)
+    userPassword = db.Column(db.String(1000), nullable=False)
     facultyRole = db.Column(db.String(50), nullable=False)
     firstName = db.Column(db.String(50), nullable=False)
     lastName = db.Column(db.String(50), nullable=False)
@@ -46,7 +47,7 @@ def login():
         # Query the database for the user  
         user = User.query.filter_by(userEmail=userEmail).first()  
   
-        if user and bcrypt.check_password_hash(user.userPassword, userPassword):  
+        if user and bcrypt.check_password_hash(user.userPassword, userPassword.encode('utf-8')):  
             session['userEmail'] = userEmail
             # User login successful  
             return jsonify({'message': 'Login successful'})  
@@ -59,13 +60,13 @@ def login():
 # Route for user sign up  
 @app.route('/signup', methods=['GET', 'POST'])  
 def signUp():  
-    if request.method == 'POST':  
+    if request.method == 'POST':
+        facultyID =  random.randint(100000000, 999999999)
         userEmail = request.form['userEmail']  
         userPassword = request.form['userPassword']  
         facultyRole = request.form['facultyRole']  
         firstName = request.form['firstName']  
         lastName = request.form['lastName']  
-        print(facultyRole)
         if request.form['facultyRole'] == 'Admin':
             facultyRole = request.form['facultyRole']
         elif request.form['facultyRole'] == 'Teacher':
@@ -76,8 +77,7 @@ def signUp():
             facultyRole = request.form['facultyRole']
         else:
             return jsonify({'message': 'Need to select faculty role'})
-    
-            
+        
   
         # Check if the username already exists  
         existing_user = User.query.filter_by(userEmail=userEmail).first()  
@@ -86,7 +86,7 @@ def signUp():
   
         # Create a new user  
         hashed_password = bcrypt.generate_password_hash(userPassword).decode('utf-8')  
-        new_user = User(userEmail=userEmail, userPassword=hashed_password, facultyRole=facultyRole, firstName=firstName, lastName=lastName)  
+        new_user = User(facultyID=facultyID, userEmail=userEmail, userPassword=hashed_password, facultyRole=facultyRole, firstName=firstName, lastName=lastName)  
         db.session.add(new_user)  
         db.session.commit()   
   
