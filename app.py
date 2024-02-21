@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session 
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash
 from flask_restful import Api, Resource, reqparse
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
@@ -37,6 +37,18 @@ def home():
             return render_template('home.html', userEmail=session['userEmail'])  
     else:  
         return redirect(url_for('login')) 
+@app.route('/admin')
+def admin():  
+    return render_template('admin.html')
+@app.route('/course')
+def course():  
+    return render_template('course.html')
+@app.route('/examscore')
+def examscore():  
+    return render_template('examscore.html')
+@app.route('/student')
+def student():  
+    return render_template('student.html')
 
 @app.route('/login', methods=['GET', 'POST']) 
 def login():  
@@ -45,15 +57,27 @@ def login():
         userPassword = request.form['userPassword']  
     
         # Query the database for the user  
-        user = User.query.filter_by(userEmail=userEmail).first()  
+        user = User.query.filter_by(userEmail=userEmail).first() 
+        print(user)
+        print(user.facultyRole)
   
         if user and bcrypt.check_password_hash(user.userPassword, userPassword.encode('utf-8')):  
             session['userEmail'] = userEmail
-            # User login successful  
-            return jsonify({'message': 'Login successful'})  
+            # User login successful, redirect to appropriate faculty view  
+            if user.facultyRole == 'Admin':  
+                return redirect(url_for('admin'))  
+            elif user.facultyRole == 'Teacher':  
+                return redirect(url_for('course'))  
+            elif user.facultyRole == 'Exam Officer':  
+                return redirect(url_for('examscore'))  
+            # elif user.facultyRole == 'Principal':  
+            #     return redirect(url_for('report'))  
+            else:  
+                return redirect(url_for('login'))
         else:  
             # Invalid credentials  
-            return jsonify({'message': 'Invalid username or password'})  
+            flash('Invalid username or password', 'error')  
+            return redirect(url_for('login'))  
     else:
         return render_template('home.html')  
     
@@ -90,7 +114,11 @@ def signUp():
         db.session.add(new_user)  
         db.session.commit()   
   
-        return jsonify({'message': 'User created successfully'})  
+        #return jsonify({'message': 'User created successfully'}) 
+        # Flash a success message  
+        flash('User created successfully, please login', 'success')
+        # Redirect the user to the login page  
+        return redirect(url_for('login'))
   
     else:
         return render_template('signUp.html') 
