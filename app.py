@@ -5,16 +5,6 @@ from flask_bcrypt import Bcrypt
 import random  
 import pyodbc
 
-"""
-conn = pyodbc.connect('Driver={SQL Server};'  
-                          'Server=gradeconnect-server.database.windows.net;'  
-                          'Database=Grade Connect;'  
-                          'UID=PiedPiper;'  
-                          'PWD=password123!;')  
- 
-cursor = conn.cursor()
-"""
-
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -58,8 +48,6 @@ def login():
     
         # Query the database for the user  
         user = User.query.filter_by(userEmail=userEmail).first() 
-        print(user)
-        print(user.facultyRole)
   
         if user and bcrypt.check_password_hash(user.userPassword, userPassword.encode('utf-8')):  
             session['userEmail'] = userEmail
