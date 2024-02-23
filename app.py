@@ -52,7 +52,7 @@ def login():
             if user.facultyRole == 'Admin':  
                 return redirect(url_for('admin'))  
             elif user.facultyRole == 'Teacher':  
-                return redirect(url_for('course-to-student'))  
+                return redirect(url_for('course_to_student'))  
             elif user.facultyRole == 'Exam Officer':  
                 return redirect(url_for('examscore'))  
             # elif user.facultyRole == 'Principal':  
@@ -179,7 +179,7 @@ Teacher Page
 """
 # Assigning a student to a course
 @app.route('/course-to-student', methods=['GET', 'POST'])
-def assignCourse():
+def course_to_student():
     if request.method == 'POST':
         studentName = request.form.get('students').split(',')
         cursor.execute("SELECT studentID FROM studentInfo where firstName = ? and lastName = ?", (studentName[0].strip(), studentName[1].strip()))
@@ -225,7 +225,7 @@ def assignCourse():
 Exam officer Page
 """
 @app.route('/examscore', methods=['GET', 'POST'])
-def examGrading():
+def examscore():
     if request.method == 'POST':
 # Inserting scores
 # Get studentID, courseID, examName, and grade from frontend
