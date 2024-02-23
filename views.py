@@ -110,11 +110,10 @@ def assignCourse():
 """
 Exam officer Page
 """
+
 @app.route('/examscores', methods=['GET', 'POST'])
 def examGrading():
     if request.method == 'POST':
-# Inserting scores
-# Get studentID, courseID, examName, and grade from frontend
 
         studentID = 1
         courseID = 1
@@ -135,13 +134,15 @@ def examGrading():
 
         passOrFail = 'Pass' if grade > passingThreshold else 'Fail'
 
-        cursor.execute("INSERT INTO exams (examID, studentID, courseID, examName, grade, passOrFail) VALUES (?, ?, ?, ?, ?, ?)", (examID, studentID, courseID, examName, grade, passOrFail))
-    
+        # cursor.execute("INSERT INTO exams (examID, studentID, courseID, examName, grade, passOrFail) VALUES (?, ?, ?, ?, ?, ?)", (examID, studentID, courseID, examName, grade, passOrFail))
+
+    cursor.execute("SELECT CONCAT(firstName, ' ', lastName) as fullName FROM studentInfo")
+    studentNameDropDown = cursor.fetchall()
+    studentNameDropDown = sorted([name[0] for name in studentNameDropDown])
     cursor.execute("SELECT courseName FROM courseInfo")
     courseNameDropDown = cursor.fetchall()
     courseNameDropDown = sorted([name[0] for name in courseNameDropDown])
-    return render_template('examscore.html', courses=courseNameDropDown)
-
+    return render_template('examscore.html', courses=courseNameDropDown, students=studentNameDropDown)
 
 if __name__ == '__main__':
     app.run(debug=True)

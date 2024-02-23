@@ -15,17 +15,20 @@
             <div class="card-body">
                 <form id = 'assingingCourse' action = 'course-to-student' method="POST">  
                     <h5 class="card-title">Courses</h5>   
-                    <select class="form-select" multiple name="courses" method = "GET">  
+                    <select class="form-select" multiple name="courses" method="GET">  
                         {% for course in courses %}  
                             <option>{{ course }}</option>   
                         {% endfor %}
                     </select>   
                     <h5 class="card-title">Students</h5>    
-                    <select class="form-select" multiple name="students" method = "GET">  
+                    <select class="form-select" multiple name="students" method="GET">  
                         {% for student in students %}  
                             <option>{{ student }}</option>  
                         {% endfor %} 
                     </select>      
+                    <form id = "courseAssignment" action="/submit" method="POST">    
+                        <input type="submit" class="btn btn-primary mt-3" value="Submit">    
+                    </form> 
                 </form>    
             </div>    
         </div>    

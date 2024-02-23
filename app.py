@@ -33,12 +33,6 @@ def admin():
 @app.route('/course')
 def course():  
     return render_template('course.html')
-@app.route('/course-to-student')
-def courseToStudent():  
-    return render_template('courseToStudent.html')
-@app.route('/examscore')
-def examscore():  
-    return render_template('examscore.html')
 @app.route('/student')
 def student():  
     return render_template('student.html')
@@ -230,7 +224,7 @@ def assignCourse():
 """
 Exam officer Page
 """
-@app.route('/examscores', methods=['GET', 'POST'])
+@app.route('/examscore', methods=['GET', 'POST'])
 def examGrading():
     if request.method == 'POST':
 # Inserting scores
@@ -255,12 +249,15 @@ def examGrading():
 
         passOrFail = 'Pass' if grade > passingThreshold else 'Fail'
 
-        cursor.execute("INSERT INTO exams (examID, studentID, courseID, examName, grade, passOrFail) VALUES (?, ?, ?, ?, ?, ?)", (examID, studentID, courseID, examName, grade, passOrFail))
+        #cursor.execute("INSERT INTO exams (examID, studentID, courseID, examName, grade, passOrFail) VALUES (?, ?, ?, ?, ?, ?)", (examID, studentID, courseID, examName, grade, passOrFail))
     
+    cursor.execute("SELECT CONCAT(firstName, ' ', lastName) as fullName FROM studentInfo")
+    studentNameDropDown = cursor.fetchall()
+    studentNameDropDown = sorted([name[0] for name in studentNameDropDown])
     cursor.execute("SELECT courseName FROM courseInfo")
     courseNameDropDown = cursor.fetchall()
     courseNameDropDown = sorted([name[0] for name in courseNameDropDown])
-    return render_template('examscore.html', courses=courseNameDropDown)
+    return render_template('examscore.html', courses=courseNameDropDown, students=studentNameDropDown)
 
   
 if __name__ == '__main__':  
